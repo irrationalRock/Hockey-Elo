@@ -1,0 +1,35 @@
+<% provide(:title, 'OMHA ETA Standings') %>
+<h1>Hockey Ranking Hub </h1>
+
+
+<table class="table table-hover">
+<tr>
+    <th>Team Name </th>
+    <th><%= sortable "ELO", "ELO" %> </th>
+    <th>GP </th>
+    <th><%= sortable "W"  %> </th>
+    <th><%= sortable "L"  %> </th>
+    <th><%= sortable "T"  %> </th>
+    <th><%= sortable "PTS", "PTS" %> </th>
+    <th><%= sortable "GF", "GF" %> </th>
+    <th><%= sortable "GA", "GA" %> </th>
+    <th><%= sortable "DIFF", "DIFF" %></th>
+</tr>
+<% @teams.each_with_index  do |team, index| %>
+    <tr>
+        <td><%= index + 1 %> <%= link_to team.team_name , team_path(team) %></td>
+        <td><%= team.elo %></td>
+        <td><%= gp(@stats.dig(team.id, :wins),@stats.dig(team.id, :loses),@stats.dig(team.id, :ties)) %></td>
+        <td><%= @stats.dig(team.id, :wins) %></td>
+        <td><%= @stats.dig(team.id, :loses) %></td>
+        <td><%= @stats.dig(team.id, :ties) %></td>
+        <td><%= points(@stats.dig(team.id, :wins),@stats.dig(team.id, :ties)) %></td>
+        <td><%= @stats.dig(team.id, :gf) %> </td>
+        <td><%= @stats.dig(team.id, :ga) %> </td>
+        <td><%= diff(@stats.dig(team.id, :gf),@stats.dig(team.id, :ga)) %> </td>
+    </tr>
+    
+<% end %>
+</table>
+
+<%= debug @stats %>
