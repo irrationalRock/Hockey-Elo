@@ -1,14 +1,14 @@
 <% provide(:title,  "#{@team.team_name} - Team Information") %>
 <h1><%= @team.team_name %> </h1>
 <p><%= link_to "Go back to teams" , team_index_path %></p>
-<p>Location:  </p>
+<p>Location: N/A </p>
 <p>Record:  </p>
-<table class="table">
+<table class="table table-hover">
     <tr>
-        <td>Date</td>
-        <td>Home Team</td>
-        <td>Score</td>
-        <td>Away Team</td>
+        <th>Date</th>
+        <th>Home Team</th>
+        <th>Score</th>
+        <th>Away Team</th>
     </tr>
     
     <% @games.each do |game| %>

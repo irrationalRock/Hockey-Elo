@@ -13,7 +13,7 @@ class TeamController < ApplicationController
         @teams.each do |team|
             @stats = @stats.merge!(cal_stats(team.id))
         end
-        
+        #move the if statment off the index method
         if sort_column == "W"
             
             if sort_direction == "asc"
@@ -71,6 +71,22 @@ class TeamController < ApplicationController
                     (@stats[y.id][:ga] ) <=> (@stats[x.id][:ga])
                 end
             end
+            
+        elsif sort_column == "ELO"
+            @teams = Team.order(sort_column + ' ' + sort_direction)
+            
+        elsif sort_column == "DIFF"
+        
+            if sort_direction == "asc"
+                @teams = @teams.sort do |x, y |
+                    (@stats[x.id][:gf] - @stats[x.id][:ga] ) <=> (@stats[y.id][:gf] - @stats[y.id][:ga] )
+                end
+            else
+                @teams = @teams.sort do |x, y |
+                    (@stats[y.id][:gf] - @stats[y.id][:ga] ) <=> (@stats[x.id][:gf] - @stats[x.id][:ga] )
+                end
+            end
+            
         elsif sort_column == "PTS"
             #use if you have to access elo and sort 
             #@teams = Team.order(sort_column + ' ' + sort_direction)
@@ -89,10 +105,6 @@ class TeamController < ApplicationController
         end
         
         
-        #@teams.each do |team|
-        #    @stats = @stats.merge!(cal_stats(team.id))
-        #end
-        
     end
     
     def show
@@ -106,42 +118,40 @@ class TeamController < ApplicationController
     end
 
     
-    #create own class
-    def cal_stats(id)
-        win = 0
-        lose = 0
-        tie = 0
-        
-        
-        
-        goals_for = Team.get_gf(id)
-        
-        goals_against = Team.get_ga(id)
-        
-        
-        win = Team.get_wins(id)
-        
-        lose = Team.get_loses(id)
-        
-        tie = Team.get_ties(id)
-        
-        return { id => { :wins => win, :loses => lose, :ties => tie, :gf => goals_for, :ga => goals_against } }
-        
-    end
-    
-
-    
     private
+    
+        def cal_stats(id)
+            win = 0
+            lose = 0
+            tie = 0
+        
+        
+        
+            goals_for = Team.get_gf(id)
+        
+            goals_against = Team.get_ga(id)
+        
+        
+            win = Team.get_wins(id)
+        
+            lose = Team.get_loses(id)
+        
+            tie = Team.get_ties(id)
+        
+            return { id => { :wins => win, :loses => lose, :ties => tie, :gf => goals_for, :ga => goals_against } }
+        
+        end
+        
         #can't use this on wins, loses, or ties because those colomuns are not on team
         def sort_column
-            #replace with permit
-            permited_coloumns = ["W","L"]
-            if params[:sort] == "W" || params[:sort] == "L" || params[:sort] == "T" || params[:sort] == "GF" || params[:sort] == "GA"
-                params[:sort]
-            else
-                #Team.column_names.include?(params[:sort]) ? params[:sort] : "PTS"
-                return "PTS"
-            end
+            
+            permited_coloumns = ["W","L","T","GF","GA","ELO","DIFF"]
+            
+            permited_coloumns.include?(params[:sort]) ? params[:sort] : "PTS"
+            
+            
+            #Team.column_names.include?(params[:sort]) ? params[:sort] : "PTS"
+           
         end
   
         def sort_direction

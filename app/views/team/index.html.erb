@@ -1,5 +1,5 @@
 <% provide(:title, 'OMHA ETA Standings') %>
-<h1>Hockey Ranking Hub </h1>
+<h1>OMHA ETA Season </h1>
 
 
 <table class="table table-hover">
@@ -19,17 +19,15 @@
     <tr>
         <td><%= index + 1 %> <%= link_to team.team_name , team_path(team) %></td>
         <td><%= team.elo %></td>
-        <td><%= gp(@stats.dig(team.id, :wins),@stats.dig(team.id, :loses),@stats.dig(team.id, :ties)) %></td>
-        <td><%= @stats.dig(team.id, :wins) %></td>
-        <td><%= @stats.dig(team.id, :loses) %></td>
-        <td><%= @stats.dig(team.id, :ties) %></td>
-        <td><%= points(@stats.dig(team.id, :wins),@stats.dig(team.id, :ties)) %></td>
-        <td><%= @stats.dig(team.id, :gf) %> </td>
-        <td><%= @stats.dig(team.id, :ga) %> </td>
-        <td><%= diff(@stats.dig(team.id, :gf),@stats.dig(team.id, :ga)) %> </td>
+        <td><%= gp(@stats[team.id][:wins], @stats[team.id][:loses], @stats[team.id][:ties]) %></td>
+        <td><%= @stats[team.id][:wins]  %></td>
+        <td><%= @stats[team.id][:loses] %></td>
+        <td><%= @stats[team.id][:ties] %></td>
+        <td><%= points(@stats[team.id][:wins],@stats[team.id][:ties]) %></td>
+        <td><%= @stats[team.id][:gf] %> </td>
+        <td><%= @stats[team.id][:ga] %> </td>
+        <td><%= diff(@stats[team.id][:gf],@stats[team.id][:ga]) %> </td>
     </tr>
     
 <% end %>
 </table>
-
-<%= debug @stats %>
