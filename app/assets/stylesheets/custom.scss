@@ -62,8 +62,28 @@ footer {
     }
   }
 }
+//IF YOU WANT TO YOU CAN USE GRID SYSTEM TO SPACE OUT COLOUMNS
+.align{
+  text-align: right;
+}
 
+.positive {
+  color:#48B400;
+  //have to put in td because span only takes as little as possible 
+  //text-align: right;
+}
 
+.negative {
+  color:#d60000;
+  //text-align: right;
+}
+
+.equal {
+  color:black;
+  //text-align: right;
+}
+
+//for current highlighted header
 th .current {
   //padding-right: 12px;
   //background-color:blue;

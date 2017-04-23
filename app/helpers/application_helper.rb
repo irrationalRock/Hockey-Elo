@@ -8,10 +8,12 @@ module ApplicationHelper
     end
     
     def goal_diff(diff)
-        if diff >= 0
-            "<span id=\"positive\"> #{diff} </span>"
+        if diff > 0
+            content_tag(:span, "+" + diff.to_s, class: "positive")
+        elsif diff == 0
+            content_tag(:span, diff, class: "equal")
         else
-            "<span id=\"negative\"> #{diff} </span>"
+            content_tag(:span, diff, class: "negative")
         end
     end
     
@@ -24,7 +26,7 @@ module ApplicationHelper
     end
     
     def diff(gf, ga)
-        gf - ga
+        goal_diff( gf - ga )
     end
     
 end

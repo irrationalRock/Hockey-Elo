@@ -4,7 +4,7 @@
 
 <table class="table table-hover">
 <tr>
-    <th>Team Name </th>
+    <th colspan="2">Team Name </th>
     <th><%= sortable "ELO", "ELO" %> </th>
     <th>GP </th>
     <th><%= sortable "W"  %> </th>
@@ -13,20 +13,21 @@
     <th><%= sortable "PTS", "PTS" %> </th>
     <th><%= sortable "GF", "GF" %> </th>
     <th><%= sortable "GA", "GA" %> </th>
-    <th><%= sortable "DIFF", "DIFF" %></th>
+    <th class="align"><%= sortable "DIFF", "DIFF" %></th>
 </tr>
 <% @teams.each_with_index  do |team, index| %>
     <tr>
-        <td><%= index + 1 %> <%= link_to team.team_name , team_path(team) %></td>
+        <td class="align"><%= index + 1 %></td>
+        <td ><%= link_to team.team_name , team_path(team) %></td>
         <td><%= team.elo %></td>
-        <td><%= gp(@stats[team.id][:wins], @stats[team.id][:loses], @stats[team.id][:ties]) %></td>
-        <td><%= @stats[team.id][:wins]  %></td>
-        <td><%= @stats[team.id][:loses] %></td>
-        <td><%= @stats[team.id][:ties] %></td>
+        <td ><%= gp(@stats[team.id][:wins], @stats[team.id][:loses], @stats[team.id][:ties]) %></td>
+        <td ><%= @stats[team.id][:wins]  %></td>
+        <td ><%= @stats[team.id][:loses] %></td>
+        <td ><%= @stats[team.id][:ties] %></td>
         <td><%= points(@stats[team.id][:wins],@stats[team.id][:ties]) %></td>
-        <td><%= @stats[team.id][:gf] %> </td>
-        <td><%= @stats[team.id][:ga] %> </td>
-        <td><%= diff(@stats[team.id][:gf],@stats[team.id][:ga]) %> </td>
+        <td><%= number_with_precision( @stats[team.id][:gf] /gp(@stats[team.id][:wins], @stats[team.id][:loses], @stats[team.id][:ties]).to_f, :precision => 2) %> </td>
+        <td><%= number_with_precision( @stats[team.id][:ga] /gp(@stats[team.id][:wins], @stats[team.id][:loses], @stats[team.id][:ties]).to_f, :precision => 2) %> </td>
+        <td class="align" ><%= diff(@stats[team.id][:gf],@stats[team.id][:ga]) %> </td>
     </tr>
     
 <% end %>
