@@ -10,28 +10,45 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170112032206) do
+ActiveRecord::Schema.define(version: 20170527205753) do
 
   create_table "games", force: :cascade do |t|
     t.integer  "home_team_id"
     t.integer  "away_team_id"
     t.integer  "home_team_score"
     t.integer  "away_team_score"
+    t.integer  "home_team_elo"
+    t.integer  "away_team_elo"
+    t.integer  "home_team_change"
+    t.integer  "away_team_change"
     t.string   "venue"
     t.datetime "date"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  create_table "leagues", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "seasons", force: :cascade do |t|
+    t.string   "age_group"
+    t.string   "skill_level"
+    t.integer  "year"
+    t.integer  "league_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "teams", force: :cascade do |t|
     t.string   "team_name"
     t.string   "location"
-    t.string   "league_id"
-    t.integer  "elo",         default: 1500
-    t.string   "skill_level"
-    t.string   "age_group"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.string   "season_id"
+    t.integer  "elo",        default: 1500
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
 end

@@ -3,11 +3,13 @@ class Team < ApplicationRecord
     #the reason why I could not 
     has_many :home_games, :foreign_key => "home_team_id", :class_name => "Game"
     has_many :away_games, :foreign_key => "away_team_id", :class_name => "Game"
+    belongs_to :season
     
     validates :team_name, presence: true
-    validates :location, presence: true
-    validates :skill_level, presence: true
-    validates :age_group, presence: true
+    #nend to get rid of
+    #validates :location, presence: true
+    #validates :skill_level, presence: true
+    #validates :age_group, presence: true
     
     #put the stats method in here
     

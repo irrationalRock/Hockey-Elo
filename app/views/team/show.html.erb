@@ -1,22 +1,67 @@
 <% provide(:title,  "#{@team.team_name} - Team Information") %>
-<h1><%= @team.team_name %> </h1>
-<p><%= link_to "Go back to teams" , team_index_path %></p>
-<p>Location: N/A </p>
-<p>Record:  </p>
+
+<h1><%= @team.team_name %></h1>
+<h4><%= @team.season.age_group %> | <%= @team.season.skill_level %> | <%= @team.season.league.name %> | <%= @team.season.year %></h4>
+<h4>ELO: <%= @team.elo %> | <%= @stat[@team.id][:wins] %>-<%= @stat[@team.id][:loses]%>-<%= @stat[@team.id][:ties] %> | <%= number_with_precision( (@stat[@team.id][:ties].to_f + @stat[@team.id][:wins].to_f*2 ) / ((@stat[@team.id][:wins].to_f+@stat[@team.id][:loses].to_f+@stat[@team.id][:ties].to_f) * 2), precision: 3) %> W% </h4>
+<h4><%= number_with_precision( @stat[@team.id][:gf] /gp(@stat[@team.id][:wins],@stat[@team.id][:loses], @stat[@team.id][:ties]).to_f, :precision => 2) %> GPG | <%= number_with_precision( @stat[@team.id][:ga] /gp(@stat[@team.id][:wins], @stat[@team.id][:loses], @stat[@team.id][:ties]).to_f, :precision => 2) %> GAA</h4>
+
+
 <table class="table table-hover">
     <tr>
         <th>Date</th>
-        <th>Home Team</th>
-        <th>Score</th>
-        <th>Away Team</th>
+        <th>Adversary</th>
+        <th>Location</th>
+        <th>ELO Change</th>
+        <th>Result</th>
     </tr>
     
-    <% @games.each do |game| %>
+    <% @test.each do |game| %>
         <tr>
-            <td><%= game.date %></td>
-            <td><%= game.home_team.team_name %></td>
-            <td><%= game.home_team_score %> - <%= game.away_team_score %></td>
-            <td><%= game.away_team.team_name %></td>
+            <td><%= game.date.strftime("%b %d %I:%M %p") %></td>
+            <td><% if @team.team_name != game.home_team.team_name %>
+                @
+                <%= link_to game.home_team.team_name, team_path(game.home_team) %>
+                <% elsif @team.team_name != game.away_team.team_name %>
+                vs.
+                <%= link_to game.away_team.team_name, team_path(game.away_team) %>
+                <% end %>
+            </td>
+            <td><%= game.venue %></td>
+            <td><% if @team.team_name == game.home_team.team_name %>
+                <%= goal_diff(game.home_team_change) %>
+                <% elsif @team.team_name == game.away_team.team_name %>
+                <%= goal_diff(game.away_team_change) %>
+                <% end %>
+            </td>
+            
+            <td>
+                <% if game.home_team_score == game.away_team_score %>
+                    T
+                    <%= game.home_team_score %> - <%= game.away_team_score %>
+                <% elsif @team.team_name == game.home_team.team_name %>
+                    
+                    <% if game.home_team_score > game.away_team_score %>
+                    W
+                    <%= game.home_team_score %> - <%= game.away_team_score %>
+                    
+                    <% elsif game.home_team_score < game.away_team_score  %>    
+                    L
+                    <%= game.home_team_score %> - <%= game.away_team_score %>
+                    <% end %>
+                
+                <% elsif @team.team_name == game.away_team.team_name  %>
+                    <% if game.away_team_score > game.home_team_score %>
+                    W
+                    <%= game.away_team_score %> - <%= game.home_team_score %>
+                    <% elsif game.away_team_score < game.home_team_score  %>    
+                    L
+                    <%= game.away_team_score %> - <%= game.home_team_score %>
+                    <% end %>
+                
+                <% end %>
+                
+            
+            </td>
         </tr>
     <% end %>
 </table>

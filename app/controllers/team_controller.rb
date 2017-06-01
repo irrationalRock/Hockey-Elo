@@ -108,11 +108,28 @@ class TeamController < ApplicationController
     end
     
     def show
+        #need to have safe params method to check
         @team = Team.find(params[:id])
-        @games = Team.get_games(params[:id])
+        games = Team.get_games(params[:id])
+        @stat = cal_stats(@team.id)
         
-        @games = @games.sort do |x , y |
+        @test = Array.new
+        
+        #need to move to get_games method
+        games = games.sort do |x , y |
             x.date <=> y.date
+        end
+        #need to make more efficifent 
+        games = games.each do | x |
+            if x.date.mon == 9 || x.date.mon == 10 || x.date.mon == 11 || x.date.mon == 12
+               @test << x 
+            end
+        end
+        
+        games = games.each do | x |
+            if x.date.mon == 1 || x.date.mon == 2 || x.date.mon == 3 || x.date.mon == 4
+               @test << x 
+            end
         end
         
     end
@@ -124,9 +141,8 @@ class TeamController < ApplicationController
             win = 0
             lose = 0
             tie = 0
-        
-        
-        
+            
+            
             goals_for = Team.get_gf(id)
         
             goals_against = Team.get_ga(id)
@@ -149,7 +165,6 @@ class TeamController < ApplicationController
             
             permited_coloumns.include?(params[:sort]) ? params[:sort] : "PTS"
             
-            
             #Team.column_names.include?(params[:sort]) ? params[:sort] : "PTS"
            
         end
@@ -157,4 +172,6 @@ class TeamController < ApplicationController
         def sort_direction
             %w[asc desc].include?(params[:direction]) ?  params[:direction] : "desc"
         end
+        
+        
 end

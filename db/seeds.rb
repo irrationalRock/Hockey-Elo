@@ -6,7 +6,13 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-#had to rename because it was creating conflicts with the game table
+require 'csv'
+
+#create all the league objects
+omha = League.create(name: "OMHA")
+gthl = League.create(name: "GTHL")
+alliance = League.create(name: "Alliance")
+
 class Stuff
 	def initialize
 	
@@ -18,30 +24,29 @@ class Stuff
 		
 	end
 	
-	def initialize(time,date, score, away_team, home_team,venue)
+	def initialize(time,date, venue, home_team, away_team , home_score, away_score)
 		@home_score = home_score
-		@score = score
-		@away_score = score.split("-").first.strip
-		@home_score = score.split("-").last.strip
-		#puts "away_score: #{@away_score}"
-		@home_team = home_team.to_s.gsub!(/\d\s?/, "")
-		@away_team = away_team.to_s.gsub!(/\d\s?/, "")
+		@away_score = away_score
+		@home_score = home_score
+		@home_team = home_team
+		@away_team = away_team
+		#puts "#{time} #{date} #{venue}"
+		@time = DateTime.strptime("#{time} #{date}", '%b %d %I:%M %p')
 		
-		time_split = time.to_s.split(" ").first
-		day = time.to_s.split(" ").last
-		#puts "time : #{ time_split} "
-		#derp = Date::ABBR_MONTHNAMES.index(time_split.to_s)
-		#puts "derp : #{derp}"
-		#puts "trans : #{ Date::ABBR_MONTHNAMES.index(time_split.to_s) } "
-		if Date::ABBR_MONTHNAMES.index(time_split.to_s) >= 1 && Date::ABBR_MONTHNAMES.index(time_split.to_s) <= 4
-			#puts "2016 #{time_split} #{day} #{date}"
-			@time = DateTime.strptime("2016 #{time_split} #{day} #{date}", '%Y %b %d %I:%M %p')
-		else
-			#puts "2015 #{time_split} #{day} #{date}"
-			@time = DateTime.strptime("2015 #{time_split} #{day} #{date}", '%Y %b %d %I:%M %p')
-		end
 		
-		#@time = time
+		#time_split = time
+		#day = date
+		#puts time_split
+		#puts day
+		#may be causing problems because timesplit is Sep 11 and expecting Sep
+		#if Date::ABBR_MONTHNAMES.index(time_split.to_s) >= 1 && Date::ABBR_MONTHNAMES.index(time_split.to_s) <= 4
+			
+		#	@time = DateTime.strptime("#{time_split} #{day}", '%b %d %I:%M %p')
+		#else
+			
+		#	@time = DateTime.strptime("#{time_split} #{day}", '%b %d %I:%M %p')
+		#end
+		
 		@venue = venue
 	end
 	
@@ -65,8 +70,8 @@ class Stuff
 		@time
 	end
 	
-	def venue
-		@venue
+	def venue 
+	    @venue 
 	end
 	
 	def eql?(other)
@@ -81,198 +86,303 @@ class Stuff
 	end
 end
 
-class Hockey_Scraper
-    attr_reader :url, :doc, :games
-    
-    
-    def initialize(url)
-        @url = url
-        @doc = Nokogiri::HTML(open(url))
-        @games = []
-        table = doc.at('#page_body > section > table')
+files = Dir.entries("./db/game_data")
+listOfGames = []
+files.each do | x |
+    puts x
+	name = x.match(".*\.\(csv\)")
+	unless name.nil?
+		#puts name
+		listOfGames << name
+	end
+end
 
-        game_stats = ""
-        table.search('tr').each do |tr|
-    
-            tr.search('td').each do |td|
-                if (td['class'] != 'hide-wide date-and-time')
-                    #puts td.text
-                    game_stats << td.text.strip << ","
-                end
-    
-            end
-            
-            @games << remove_trailing_comma(game_stats)
-            game_stats = ""
-            
-        end
-	
+theGames = []
+teamNames = []
+#need to rest the games and teams names each time
+listOfGames.each do | x |
+	stuff = x.to_s.split('-')
+	if stuff[0] == 'OMHA'
 		
-		@games.shift
-		
-        @games.each_with_index do |val, index|
-         puts "#{index} : #{val}"
-        end
-        
-        #game_list.shift
-        
-    end
-    
-    
-    def game_return 
-        game_list = []
-        @games.each do |x|
-        	puts x
-        	game_sheet = x.split(",")
-        	
-        	
-        	game_sheet.each_with_index do |val, index|
-        		#puts "#{index} : #{val}"
-        	end
-        	
-        	if game_sheet[4] != ""
-            	game_list.push(Stuff.new(game_sheet[1],game_sheet[2],game_sheet[4],game_sheet[3],game_sheet[5], game_sheet[6]))
-            	end
-            
-        end
-        #puts "games length : #{@games.length}"
-        #puts "game_list : #{game_list.length}"
-        
-        
-        game_list.each_with_index do |val, index|
-        		#puts "#{index} : #{val.print}"
-        end
-        
-        return game_list
-    end
-    
-    def remove_trailing_comma(str)
-    str.nil? ? nil : str.chomp(",")
-    
-    end
-end
-
-def rand_time(from, to=Time.now)
-	Time.at((to.to_f - from.to_f)*rand + from.to_f)
-end
-
-team_seasons = ["http://www.theonedb.com/Teams/27732/Peterborough-ETA-Bantam-Petes-2016-2017/Schedule",
-"http://www.theonedb.com/Teams/27680/Central-Ontario-ETA-Bantam-Wolves-2016-2017/Schedule",
-"http://www.theonedb.com/Teams/27741/Quinte-ETA-Bantam-Red-Devils-2016-2017/Schedule",
-"http://www.theonedb.com/Teams/27697/Kingston-ETA-Bantam-Jr-Frontenacs-2016-2017/Schedule",
-"http://www.theonedb.com/Teams/27759/Whitby-ETA-Bantam-Wildcats-2016-2017/Schedule",
-"http://www.theonedb.com/Teams/27689/Clarington-ETA-Bantam-Toros-2016-2017/Schedule",
-"http://www.theonedb.com/Teams/27723/Oshawa-ETA-Bantam-Generals-2016-2017/Schedule",
-"http://www.theonedb.com/Teams/27768/York-Simcoe-ETA-Bantam-Express-2016-2017/Schedule",
-"http://www.theonedb.com/Teams/27671/Barrie-ETA-Bantam-Jr-Colts-2016-2017/Schedule",
-"http://www.theonedb.com/Teams/27714/North-Central-ETA-Bantam-Predators-2016-2017/Schedule",
-"http://www.theonedb.com/Teams/27750/Richmond-Hill-ETA-Bantam-Coyotes-2016-2017/Schedule",
-"http://www.theonedb.com/Teams/27662/Ajax-Pickering-ETA-Bantam-Raiders-2016-2017/Schedule",
-"http://www.theonedb.com/Teams/27706/Markham-ETA-Bantam-Waxers-2016-2017/Schedule"]
-
-teams = ['Markham Waxers','York-Simcoe Express', 'Barrie Jr Colts', 'North Central Predators', 'Richmond Hill Coyotes', 
-'Ajax-Pickering Raiders', 'Peterborough Petes', 'Central Ontario Wolves', 'Quinte Red Devils', 'Kingston Jr Frontenacs', 
-'Whitby Wildcats', 'Clarington Toros', 'Oshawa Generals' ]
-
-location = ['Markham', 'Newmarket', 'Barrie', 'Orillia', 'Richmond Hill', 
-'Ajax-Pickering', 'Peterborough', 'Lindsay', 'Quinte', 'Kingston', "Whitby", "Clarington", "Oshawa" ]
-
-#seeding the teams
-Team.create(team_name: teams[0], location: location[0], skill_level: 'AAA', age_group: 'Bantam')
-
-Team.create(team_name: teams[1], location: location[1], skill_level: 'AAA', age_group: 'Bantam')
-
-Team.create(team_name: teams[2], location: location[2], skill_level: 'AAA', age_group: 'Bantam')
-
-Team.create(team_name: teams[3], location: location[3], skill_level: 'AAA', age_group: 'Bantam')
-
-Team.create(team_name: teams[4], location: location[4], skill_level: 'AAA', age_group: 'Bantam')
-
-Team.create(team_name: teams[5], location: location[5], skill_level: 'AAA', age_group: 'Bantam')
-
-Team.create(team_name: teams[6], location: location[6], skill_level: 'AAA', age_group: 'Bantam')
-
-Team.create(team_name: teams[7], location: location[7], skill_level: 'AAA', age_group: 'Bantam')
-
-Team.create(team_name: teams[8], location: location[8], skill_level: 'AAA', age_group: 'Bantam')
-
-Team.create(team_name: teams[9], location: location[9], skill_level: 'AAA', age_group: 'Bantam')
-
-Team.create(team_name: teams[10], location: location[10], skill_level: 'AAA', age_group: 'Bantam')
-
-Team.create(team_name: teams[11], location: location[11], skill_level: 'AAA', age_group: 'Bantam')
-
-Team.create(team_name: teams[12], location: location[12], skill_level: 'AAA', age_group: 'Bantam')
-
-#home_teams = (1..13).to_a
-#away_teams = (1..13).to_a
-
-#puts home_teams
-#puts away_teams
-
-master_list = []
-
-team_seasons.each do | x |
-	teams_game = Hockey_Scraper.new(x)
-	master_list = master_list + teams_game.game_return
-	master_list = master_list.uniq{ |u|
-    	uniq_array = [u.home_team, u.away_team, u.time]
-    	uniq_array
-	}
-	#master_list = (master_list | teams_game.game_return).uniq
-end
-
-master_list.sort! { |x, y|
-	x.time <=> y.time
-	
-}
-
-puts "after hockey scrap"
-
-master_list.each do | i |
-	i.print
-	home_conv = teams.find_index(i.home_team) + 1
-	away_conv = teams.find_index(i.away_team) + 1
-	Game.create(home_team_id: home_conv, away_team_id: away_conv, home_team_score: i.home_score, away_team_score: i.away_score, date: i.time, venue: i.venue)
-end
-
-puts "master_list length: #{master_list.length}"
-
-=begin
-
-game_list = []
-
-home_teams.each do |x|
-    array_copy = away_teams
-    array_copy.each do |i|
-		if x != i
-			2.times do |y|
-			    game = Stuff.new(rand(0..10), rand(0..10), x, i,rand_time(Time.local(2015,9,18), Time.local(2016,4,1) ) )
-			    #Game.new(rand(0..10), rand(0..10), rand(1..13), rand(1..13),rand_time(Time.local(2015,9,18), Time.local(2016,4,1) ) )
-			    #Game.new(home_team_id: 1, away_team_id: 4, away_team_score: 1 , home_team_score: 5, date:Time.now )
-			    game_list.push(game)
-			    
-			    #Game.create(home_team_id: x, away_team_id: i,home_team_score: rand(0..10), away_team_score: rand(0..10), date: rand_time(Time.local(2015,9,18), Time.local(2016,4,1) ) )
-				
-			end
+		if stuff[1] == 'AAA'
+			
+			if stuff[2] == 'Novice'
+				if stuff[3].include? "2016"
+					#puts stuff[3]
+					CSV.foreach("./db/game_data/" + x.to_s) do |row|
+						# use row here...
+						#puts row
+						game = Stuff.new(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
+						theGames << game
+					end
+					theGames.each do | y |
+						teamNames << y.away_team
+						teamNames << y.home_team
+						teamNames = teamNames.uniq
+					end
+					derp = stuff[3].split('.')
 					
+					puts stuff[2]
+					puts stuff[1]
+					puts derp[0]
+					
+					tmp = Season.create(age_group: stuff[2].to_s, skill_level: stuff[1].to_s, year: derp[0], league: omha)
+					
+					teamNames.each do | z |
+						#create teams here
+						puts z
+						Team.create(team_name: z.to_s, season: tmp)
+					end
+					
+					theGames.each do | b |
+						#have to be more specific and have to select by age group, skill_level, league, year,
+					    #home = Team.find_by( team_name: b.home_team, season: tmp)
+					    home = Team.find_by( team_name: b.home_team)
+					    #away = Team.find_by( team_name: b.away_team, season: tmp)
+					    away = Team.find_by( team_name: b.away_team)
+					    
+					    Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
+					end
+					
+					#create games here
+				end
+			elsif stuff[2] == 'Minor_Atom'
+				if stuff[3].include? "2016"
+					#puts stuff[3]
+					CSV.foreach("./db/game_data/" + x.to_s) do |row|
+						# use row here...
+						#puts row
+						game = Stuff.new(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
+						#puts game.print
+						theGames << game
+					end
+					theGames.each do | y |
+						teamNames << y.away_team
+						teamNames << y.home_team
+						teamNames = teamNames.uniq
+					end
+					
+					teamNames.each do | z |
+						#create teams here
+						puts z
+						Team.create(team_name: z.to_s, skill_level: aaa , league: omha, year: a2016, age_group: mat)
+					end
+					
+					theGames.each do | b |
+					    home = Team.find_by( team_name: b.home_team, skill_level: aaa, league: omha, age_group: mat)
+					    away = Team.find_by( team_name: b.away_team, skill_level: aaa, league: omha, age_group: mat)
+					    
+					   Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
+					end
+				end
+			elsif stuff[2] == 'Atom'
+				if stuff[3].include? "2016"
+					#puts stuff[3]
+					CSV.foreach("./db/game_data/" + x.to_s) do |row|
+						# use row here...
+						#puts row
+						game = Stuff.new(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
+						theGames << game
+					end
+					theGames.each do | y |
+						teamNames << y.away_team
+						teamNames << y.home_team
+						teamNames = teamNames.uniq
+					end
+					
+					teamNames.each do | z |
+						#create teams here
+						puts z
+						Team.create(team_name: z.to_s, skill_level: aaa , league: omha, year: a2016, age_group: atm)
+					end
+					
+					theGames.each do | b |
+					    home = Team.find_by( team_name: b.home_team, skill_level: aaa, league: omha, age_group: atm)
+					    away = Team.find_by( team_name: b.away_team, skill_level: aaa, league: omha, age_group: atm)
+					    
+					   Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
+					end
+				end
+			elsif stuff[2] == 'Minor_Peewee'
+				if stuff[3].include? "2016"
+					#puts stuff[3]
+					CSV.foreach("./db/game_data/" + x.to_s) do |row|
+						# use row here...
+						#puts row
+						game = Stuff.new(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
+						theGames << game
+					end
+					theGames.each do | y |
+						teamNames << y.away_team
+						teamNames << y.home_team
+						teamNames = teamNames.uniq
+					end
+					
+					teamNames.each do | z |
+						#create teams here
+						puts z
+						Team.create(team_name: z.to_s, skill_level: aaa , league: omha, year: a2016, age_group: mpw)
+					end
+					
+					theGames.each do | b |
+					    home = Team.find_by( team_name: b.home_team, skill_level: aaa, league: omha, age_group: mpw)
+					    away = Team.find_by( team_name: b.away_team, skill_level: aaa, league: omha, age_group: mpw)
+					    
+					   Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
+					end
+				end
+			elsif stuff[2] == 'Peewee'
+				if stuff[3].include? "2016"
+					#puts stuff[3]
+					CSV.foreach("./db/game_data/" + x.to_s) do |row|
+						# use row here...
+						#puts row
+						game = Stuff.new(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
+						theGames << game
+					end
+					theGames.each do | y |
+						teamNames << y.away_team
+						teamNames << y.home_team
+						teamNames = teamNames.uniq
+					end
+					
+					teamNames.each do | z |
+						#create teams here
+						puts z
+						Team.create(team_name: z.to_s, skill_level: aaa , league: omha, year: a2016, age_group: pwe)
+					end
+					
+					theGames.each do | b |
+					    home = Team.find_by( team_name: b.home_team, skill_level: aaa, league: omha, age_group: pwe, year: a2016)
+					    away = Team.find_by( team_name: b.away_team, skill_level: aaa, league: omha, age_group: pwe, year: a2016)
+					    
+					   Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
+					end
+				end
+			elsif stuff[2] == 'Minor_Bantam'
+				if stuff[3].include? "2016"
+					#puts stuff[3]
+					CSV.foreach("./db/game_data/" + x.to_s) do |row|
+						# use row here...
+						#puts row
+						game = Stuff.new(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
+						theGames << game
+					end
+					theGames.each do | y |
+						teamNames << y.away_team
+						teamNames << y.home_team
+						teamNames = teamNames.uniq
+					end
+					
+					teamNames.each do | z |
+						#create teams here
+						puts z
+						Team.create(team_name: z.to_s, skill_level: aaa , league: omha, year: a2016, age_group: mbn)
+					end
+					
+					theGames.each do | b |
+					    home = Team.find_by( team_name: b.home_team, skill_level: aaa, league: omha, age_group: mbn)
+					    away = Team.find_by( team_name: b.away_team, skill_level: aaa, league: omha, age_group: mbn)
+					    
+					    Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
+					end
+				end
+			elsif stuff[2] == 'Bantam'
+				if stuff[3].include? "2016"
+					#puts stuff[3]
+					CSV.foreach("./db/game_data/" + x.to_s) do |row|
+						# use row here...
+						#puts row
+						game = Stuff.new(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
+						theGames << game
+					end
+					theGames.each do | y |
+						teamNames << y.away_team
+						teamNames << y.home_team
+						teamNames = teamNames.uniq
+					end
+					
+					teamNames.each do | z |
+						#create teams here
+						puts z
+						Team.create(team_name: z.to_s, skill_level: aaa , league: omha, year: a2016, age_group: btm)
+					end
+					
+					theGames.each do | b |
+					    home = Team.find_by( team_name: b.home_team, skill_level: aaa, league: omha, age_group: btm)
+					    away = Team.find_by( team_name: b.away_team, skill_level: aaa, league: omha, age_group: btm)
+					    
+					   Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
+					end
+				end
+			elsif stuff[2] == 'Minor_Midget'
+				if stuff[3].include? "2016"
+					#puts stuff[3]
+					CSV.foreach("./db/game_data/" + x.to_s) do |row|
+						# use row here...
+						#puts row
+						game = Stuff.new(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
+						theGames << game
+					end
+					theGames.each do | y |
+						teamNames << y.away_team
+						teamNames << y.home_team
+						teamNames = teamNames.uniq
+					end
+					
+					teamNames.each do | z |
+						#create teams here
+						puts z
+						Team.create(team_name: z.to_s, skill_level: aaa , league: omha, year: a2016, age_group: mmd)
+					end
+					
+					theGames.each do | b |
+					    home = Team.find_by( team_name: b.home_team, skill_level: aaa, league: omha, age_group: mmd)
+					    away = Team.find_by( team_name: b.away_team, skill_level: aaa, league: omha, age_group: mmd)
+					    
+					   Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
+					end
+				end
+			elsif stuff[2] == 'Midget'
+				if stuff[3].include? "2016"
+					#puts stuff[3]
+					CSV.foreach("./db/game_data/" + x.to_s) do |row|
+						# use row here...
+						#puts row
+						game = Stuff.new(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
+						theGames << game
+					end
+					theGames.each do | y |
+						teamNames << y.away_team
+						teamNames << y.home_team
+						teamNames = teamNames.uniq
+					end
+					
+					teamNames.each do | z |
+						#create teams here
+						puts z
+						Team.create(team_name: z.to_s, skill_level: aaa , league: omha, year: a2016, age_group: mgt)
+					end
+					
+					theGames.each do | b |
+					    home = Team.find_by( team_name: b.home_team, skill_level: aaa, league: omha, age_group: mgt)
+					    away = Team.find_by( team_name: b.away_team, skill_level: aaa, league: omha, age_group: mgt)
+					    
+					   Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
+					end
+				end
+			end
+		elsif stuff[1] == 'AA'
+			puts stuff[1]
+		elsif stuff[1] == 'A'
+			puts stuff[1]
 		end
-        
-    end
-    
-        
-    #end
+	elsif stuff[1] == 'Alliance'
+		
+	elsif stuff[2] == 'GTHL'
+		
+	end
+	
+	theGames = []
+	teamNames = []
 end
-=end
-
-#game_list = game_list.sort do |x, y|
-#	x.time <=> y.time
-#end
-
-
-#game_list.each do |x|
-#    Game.create(home_team_id: x.home_team, away_team_id: x.away_team, home_team_score: x.home_score, away_team_score: x.away_score, date: x.time, venue: "")
-#end
-
-#rake db:seeds
-#make sure to reset database to include the reset of the teams
