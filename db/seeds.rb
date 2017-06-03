@@ -13,6 +13,29 @@ omha = League.create(name: "OMHA")
 gthl = League.create(name: "GTHL")
 alliance = League.create(name: "Alliance")
 
+#creates a season
+def init_season(_age_group, _skill_level, _year, _league) 
+	Season.create(age_group: _age_group, skill_level: _skill_level, year: _year, league: _league)
+end
+
+#takes an array and turns it into teams
+def init_team(list_of_teams, _season) 
+	list_of_teams.each do | z |
+		#create teams here
+		puts z
+		Team.create(team_name: z.to_s, season: _season)
+	end
+end
+
+def init_game(games, _season) 
+	games.each do | b |
+		#have to be more specific and have to select by age group, skill_level, league, year,
+		home = Team.find_by( team_name: b.home_team, season: _season)
+		away = Team.find_by( team_name: b.away_team, season: _season)
+		Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
+	end
+end
+
 class Stuff
 	def initialize
 	
@@ -122,24 +145,24 @@ listOfGames.each do | x |
 					end
 					derp = stuff[3].split('.')
 					
-					puts stuff[2]
-					puts stuff[1]
-					puts derp[0]
+					#puts stuff[2].to_s.gsub(/_/, ' ')
+					#puts stuff[1]
+					#puts derp[0]
+					tmp = init_season(stuff[2].to_s.gsub!(/_/, ' '), stuff[1].to_s, derp[0], omha)
+					#tmp = Season.create(age_group: stuff[2].to_s.gsub!(/_/, ' '), skill_level: stuff[1].to_s, year: derp[0], league: omha)
 					
-					tmp = Season.create(age_group: stuff[2].to_s, skill_level: stuff[1].to_s, year: derp[0], league: omha)
+					init_team(teamNames,tmp)
 					
-					teamNames.each do | z |
-						#create teams here
-						puts z
-						Team.create(team_name: z.to_s, season: tmp)
-					end
+					#teamNames.each do | z |
+					#	#create teams here
+					#	puts z
+					#	Team.create(team_name: z.to_s, season: tmp)
+					#end
 					
 					theGames.each do | b |
 						#have to be more specific and have to select by age group, skill_level, league, year,
-					    #home = Team.find_by( team_name: b.home_team, season: tmp)
-					    home = Team.find_by( team_name: b.home_team)
-					    #away = Team.find_by( team_name: b.away_team, season: tmp)
-					    away = Team.find_by( team_name: b.away_team)
+					    home = Team.find_by( team_name: b.home_team, season: tmp)
+					    away = Team.find_by( team_name: b.away_team, season: tmp)
 					    
 					    Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
 					end
@@ -161,19 +184,18 @@ listOfGames.each do | x |
 						teamNames << y.home_team
 						teamNames = teamNames.uniq
 					end
+					derp = stuff[3].split('.')
 					
-					teamNames.each do | z |
-						#create teams here
-						puts z
-						Team.create(team_name: z.to_s, skill_level: aaa , league: omha, year: a2016, age_group: mat)
-					end
+					tmp = init_season(stuff[2].to_s.gsub!(/_/, ' '), stuff[1].to_s, derp[0], omha)
 					
-					theGames.each do | b |
-					    home = Team.find_by( team_name: b.home_team, skill_level: aaa, league: omha, age_group: mat)
-					    away = Team.find_by( team_name: b.away_team, skill_level: aaa, league: omha, age_group: mat)
-					    
-					   Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
-					end
+					
+					init_team(teamNames,tmp)
+					
+					
+					
+					init_game(theGames,tmp)
+					
+					
 				end
 			elsif stuff[2] == 'Atom'
 				if stuff[3].include? "2016"
@@ -377,8 +399,18 @@ listOfGames.each do | x |
 		elsif stuff[1] == 'A'
 			puts stuff[1]
 		end
-	elsif stuff[1] == 'Alliance'
+	elsif stuff[0] == 'Alliance'
+		if stuff[1] == 'AAA'
+			if stuff[2] == 'Minor_Atom'
+				if stuff[3].include? "2016"
+					
+				end
+			end
+		elsif stuff[2] == 'AA'
 		
+		elsif stuff[2] == 'A'
+		
+		end
 	elsif stuff[2] == 'GTHL'
 		
 	end

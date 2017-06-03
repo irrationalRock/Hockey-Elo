@@ -17,6 +17,10 @@ class Team < ApplicationRecord
         Team.find(id).home_games + Team.find(id).away_games
     end
     
+    def self.get_games_count(id)
+        Team.find(id).home_games.count + Team.find(id).away_games.count
+    end
+    
     def self.get_wins(id)
         Team.find(id).home_games.where("home_team_score > away_team_score").count + 
         Team.find(id).away_games.where("away_team_score > home_team_score").count

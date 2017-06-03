@@ -10,4 +10,10 @@ class Season < ApplicationRecord
         
     end
     
+    def self.get_gpg_position(season_id, team_id)
+        #teams = Season.find(season_id).teams.get_gf(team_id) / Season.find(season_id).teams.get_games_count(team_id)
+        
+        
+    end
+    
 end

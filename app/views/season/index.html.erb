@@ -4,45 +4,9 @@
 
 
 <% @seasons.each do | season | %>
-    <h4><%= link_to "#{season.age_group} #{season.skill_level} #{season.year}" , season_path(season) %> </h4>
+    <h4><%= link_to "#{season.age_group} #{season.skill_level} #{season.year}-#{season.year+1}" , season_path(season) %> </h4>
     <% @season_top_teams[season.id].each do | team | %>
         <p> <%= team.team_name  %> <%= team.elo  %> </p>
     <% end %>
 <% end %>
 
-
-<% @seasons.each_with_index  do |season, index| %>
-    <h4><%= season.age_group %> <%= season.skill_level %> <%= season.year %> </h4>
-    
-    <table class="table table-hover">
-    <tr>
-        <th colspan="2">Team Name </th>
-        <th>ELO</th>
-        <th>GP </th>
-        <th>W</th>
-        <th>L</th>
-        <th>T</th>
-        <th>W%</th>
-        <th>GPG </th>
-        <th>GAA </th>
-        <th class="align">DIFF</th>
-    </tr>
-    
-    <% season.teams.each_with_index  do |team, index| %>
-    <tr>
-        <td class="align"><%= index + 1 %></td>
-        <td ><%= link_to team.team_name , team_path(team) %></td>
-        <td><%= team.elo %></td>
-        <td ><%= gp(@stats[team.id][:wins], @stats[team.id][:loses], @stats[team.id][:ties]) %></td>
-        <td ><%= @stats[team.id][:wins]  %></td>
-        <td ><%= @stats[team.id][:loses] %></td>
-        <td ><%= @stats[team.id][:ties] %></td>
-        <td><%= number_with_precision((@stats[team.id][:ties].to_f + @stats[team.id][:wins].to_f*2 ) / ((@stats[team.id][:wins].to_f+@stats[team.id][:loses].to_f+@stats[team.id][:ties].to_f) * 2), precision: 3) %></td>
-        <td><%= number_with_precision( @stats[team.id][:gf] /gp(@stats[team.id][:wins], @stats[team.id][:loses], @stats[team.id][:ties]).to_f, :precision => 2) %> </td>
-        <td><%= number_with_precision( @stats[team.id][:ga] /gp(@stats[team.id][:wins], @stats[team.id][:loses], @stats[team.id][:ties]).to_f, :precision => 2) %> </td>
-        <td class="align" ><%= diff(@stats[team.id][:gf],@stats[team.id][:ga]) %> </td>
-    </tr>
-    <% end %>
-    
-    </table>
-<% end %>

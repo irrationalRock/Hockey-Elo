@@ -21,6 +21,17 @@ class SeasonController < ApplicationController
     
     def show
         @season = Season.find(params[:id])
+        
+        @teams = Team.where(season: @season).order("elo desc")
+        
+        @stats = Hash.new
+        
+        @teams.each do |team|
+            @stats = @stats.merge!(cal_stats(team.id))
+        end
+        
+        #@season = @season.includes(:teams).order("teams.elo desc")
+        #@age_groups = AgeGroup.includes(:teams).order("teams.elo desc")
     end
     
     private
