@@ -7,8 +7,8 @@ Rails.application.routes.draw do
   resources :league
   
   
-  resources :magazines do
-    resources :ads
+  resources :seasons do
+    resources :league
   end
   
 end

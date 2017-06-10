@@ -188,10 +188,7 @@ listOfGames.each do | x |
 					
 					tmp = init_season(stuff[2].to_s.gsub!(/_/, ' '), stuff[1].to_s, derp[0], omha)
 					
-					
 					init_team(teamNames,tmp)
-					
-					
 					
 					init_game(theGames,tmp)
 					
@@ -403,7 +400,25 @@ listOfGames.each do | x |
 		if stuff[1] == 'AAA'
 			if stuff[2] == 'Minor_Atom'
 				if stuff[3].include? "2016"
+					CSV.foreach("./db/game_data/" + x.to_s) do |row|
+						# use row here...
+						#puts row
+						game = Stuff.new(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
+						#puts game.print
+						theGames << game
+					end
+					theGames.each do | y |
+						teamNames << y.away_team
+						teamNames << y.home_team
+						teamNames = teamNames.uniq
+					end
+					derp = stuff[3].split('.')
 					
+					tmp = init_season(stuff[2].to_s.gsub!(/_/, ' '), stuff[1].to_s, derp[0], alliance)
+					
+					init_team(teamNames,tmp)
+					
+					init_game(theGames,tmp)
 				end
 			end
 		elsif stuff[2] == 'AA'

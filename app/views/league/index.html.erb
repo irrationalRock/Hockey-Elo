@@ -3,5 +3,8 @@
 <h1>Leagues </h1>
 
 <% @leagues.each_with_index  do |league, index| %>
-
+    <h4><%= league.name  %></h4>
+    <% league.seasons.each  do |season| %>
+        <p><%= season.age_group %> <%= season.skill_level %> <%= season.year %></p>
+    <% end %>
 <% end %>

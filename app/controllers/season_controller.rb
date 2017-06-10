@@ -6,17 +6,18 @@ class SeasonController < ApplicationController
         #need to create has that has key of season id and value be the top teams id
         #@derp = Array.new
         @season_top_teams = Hash.new
+        @collectTeams = Hash.new
         @seasons.each do | season |
-             #@derp = Season.get_top_team(season.id) 
-             @season_top_teams = Season.get_top_team(season.id)
+             @season_top_teams = @season_top_teams.merge!(Season.get_top_team(season.id))
+             #@collectTeams
         end
 
-        @teams = Team.order(:elo)
-        @stats = Hash.new
+        #@teams = Team.order(:elo)
+        #@stats = Hash.new
         
-        @teams.each do |team|
-            @stats = @stats.merge!(cal_stats(team.id))
-        end
+        #@teams.each do |team|
+        #    @stats = @stats.merge!(cal_stats(team.id))
+        #end
     end
     
     def show
