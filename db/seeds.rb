@@ -13,6 +13,14 @@ omha = League.create(name: "OMHA")
 gthl = League.create(name: "GTHL")
 alliance = League.create(name: "Alliance")
 
+nov = Season.create(age_group: "Novice", year: 2016, skill_level: "AAA")
+mat = Season.create(age_group: "Minor Atom", year: 2016, skill_level: "AAA")
+atm = Season.create(age_group: "Atom", year: 2016, skill_level: "AAA")
+mpw = Season.create(age_group: "Minor Peewee", year: 2016, skill_level: "AAA")
+pwe = Season.create(age_group: "Peewee", year: 2016, skill_level: "AAA")
+mbn = Season.create(age_group: "Minor Bantam", year: 2016, skill_level: "AAA")
+btm = Season.create(age_group: "Bantam", year: 2016, skill_level: "AAA")
+
 #creates a season
 def init_season(_age_group, _skill_level, _year, _league) 
 	Season.create(age_group: _age_group, skill_level: _skill_level, year: _year, league: _league)
@@ -171,7 +179,6 @@ listOfGames.each do | x |
 				end
 			elsif stuff[2] == 'Minor_Atom'
 				if stuff[3].include? "2016"
-					#puts stuff[3]
 					CSV.foreach("./db/game_data/" + x.to_s) do |row|
 						# use row here...
 						#puts row
@@ -186,21 +193,30 @@ listOfGames.each do | x |
 					end
 					derp = stuff[3].split('.')
 					
-					tmp = init_season(stuff[2].to_s.gsub!(/_/, ' '), stuff[1].to_s, derp[0], omha)
+					c = Competition.create(season: mat, league: omha )
 					
-					init_team(teamNames,tmp)
-					
-					init_game(theGames,tmp)
-					
+					#need to first create a competition and then add it to a team
+					teamNames.each do | z |
+						#create teams here
+						puts z
+						Team.create(team_name: z.to_s, competition: c)
+					end
+					#need to load games
+					theGames.each do | b |
+					    home = Team.find_by( team_name: b.home_team, competition: c)
+					    away = Team.find_by( team_name: b.away_team, competition: c)
+					    
+					   Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
+					end
 					
 				end
 			elsif stuff[2] == 'Atom'
 				if stuff[3].include? "2016"
-					#puts stuff[3]
 					CSV.foreach("./db/game_data/" + x.to_s) do |row|
 						# use row here...
 						#puts row
 						game = Stuff.new(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
+						#puts game.print
 						theGames << game
 					end
 					theGames.each do | y |
@@ -208,16 +224,20 @@ listOfGames.each do | x |
 						teamNames << y.home_team
 						teamNames = teamNames.uniq
 					end
+					derp = stuff[3].split('.')
 					
+					c = Competition.create(season: atm, league: omha )
+					
+					#need to first create a competition and then add it to a team
 					teamNames.each do | z |
 						#create teams here
 						puts z
-						Team.create(team_name: z.to_s, skill_level: aaa , league: omha, year: a2016, age_group: atm)
+						Team.create(team_name: z.to_s, competition: c)
 					end
-					
+					#need to load games
 					theGames.each do | b |
-					    home = Team.find_by( team_name: b.home_team, skill_level: aaa, league: omha, age_group: atm)
-					    away = Team.find_by( team_name: b.away_team, skill_level: aaa, league: omha, age_group: atm)
+					    home = Team.find_by( team_name: b.home_team, competition: c)
+					    away = Team.find_by( team_name: b.away_team, competition: c)
 					    
 					   Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
 					end
@@ -313,6 +333,7 @@ listOfGames.each do | x |
 						# use row here...
 						#puts row
 						game = Stuff.new(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
+						#puts game.print
 						theGames << game
 					end
 					theGames.each do | y |
@@ -320,16 +341,20 @@ listOfGames.each do | x |
 						teamNames << y.home_team
 						teamNames = teamNames.uniq
 					end
+					derp = stuff[3].split('.')
 					
+					c = Competition.create(season: btm, league: omha )
+					
+					#need to first create a competition and then add it to a team
 					teamNames.each do | z |
 						#create teams here
 						puts z
-						Team.create(team_name: z.to_s, skill_level: aaa , league: omha, year: a2016, age_group: btm)
+						Team.create(team_name: z.to_s, competition: c)
 					end
-					
+					#need to load games
 					theGames.each do | b |
-					    home = Team.find_by( team_name: b.home_team, skill_level: aaa, league: omha, age_group: btm)
-					    away = Team.find_by( team_name: b.away_team, skill_level: aaa, league: omha, age_group: btm)
+					    home = Team.find_by( team_name: b.home_team, competition: c)
+					    away = Team.find_by( team_name: b.away_team, competition: c)
 					    
 					   Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
 					end
@@ -348,18 +373,18 @@ listOfGames.each do | x |
 						teamNames << y.home_team
 						teamNames = teamNames.uniq
 					end
-					
+					puts "Minor Midget"
 					teamNames.each do | z |
 						#create teams here
 						puts z
-						Team.create(team_name: z.to_s, skill_level: aaa , league: omha, year: a2016, age_group: mmd)
+						#Team.create(team_name: z.to_s, skill_level: aaa , league: omha, year: a2016, age_group: mmd)
 					end
 					
 					theGames.each do | b |
-					    home = Team.find_by( team_name: b.home_team, skill_level: aaa, league: omha, age_group: mmd)
-					    away = Team.find_by( team_name: b.away_team, skill_level: aaa, league: omha, age_group: mmd)
+					    #home = Team.find_by( team_name: b.home_team, skill_level: aaa, league: omha, age_group: mmd)
+					    #away = Team.find_by( team_name: b.away_team, skill_level: aaa, league: omha, age_group: mmd)
 					    
-					   Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
+					   #Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
 					end
 				end
 			elsif stuff[2] == 'Midget'
@@ -414,11 +439,88 @@ listOfGames.each do | x |
 					end
 					derp = stuff[3].split('.')
 					
-					tmp = init_season(stuff[2].to_s.gsub!(/_/, ' '), stuff[1].to_s, derp[0], alliance)
+					c = Competition.create(season: mat, league: alliance )
 					
-					init_team(teamNames,tmp)
+					#need to first create a competition and then add it to a team
+					teamNames.each do | z |
+						#create teams here
+						puts z
+						Team.create(team_name: z.to_s, competition: c)
+					end
+					#need to load games
+					theGames.each do | b |
+					    home = Team.find_by( team_name: b.home_team, competition: c)
+					    away = Team.find_by( team_name: b.away_team, competition: c)
+					    
+					   Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
+					end
 					
-					init_game(theGames,tmp)
+				end
+			
+			elsif stuff[2] == 'Atom'
+				if stuff[3].include? "2016"
+					CSV.foreach("./db/game_data/" + x.to_s) do |row|
+						# use row here...
+						#puts row
+						game = Stuff.new(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
+						#puts game.print
+						theGames << game
+					end
+					theGames.each do | y |
+						teamNames << y.away_team
+						teamNames << y.home_team
+						teamNames = teamNames.uniq
+					end
+					derp = stuff[3].split('.')
+					
+					c = Competition.create(season: atm, league: alliance )
+					
+					#need to first create a competition and then add it to a team
+					teamNames.each do | z |
+						#create teams here
+						puts z
+						Team.create(team_name: z.to_s, competition: c)
+					end
+					#need to load games
+					theGames.each do | b |
+					    home = Team.find_by( team_name: b.home_team, competition: c)
+					    away = Team.find_by( team_name: b.away_team, competition: c)
+					    
+					   Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
+					end
+				end
+			
+			elsif stuff[2] == 'Bantam'
+				if stuff[3].include? "2016"
+					CSV.foreach("./db/game_data/" + x.to_s) do |row|
+						# use row here...
+						#puts row
+						game = Stuff.new(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
+						#puts game.print
+						theGames << game
+					end
+					theGames.each do | y |
+						teamNames << y.away_team
+						teamNames << y.home_team
+						teamNames = teamNames.uniq
+					end
+					derp = stuff[3].split('.')
+					
+					c = Competition.create(season: btm, league: alliance )
+					
+					#need to first create a competition and then add it to a team
+					teamNames.each do | z |
+						#create teams here
+						puts z
+						Team.create(team_name: z.to_s, competition: c)
+					end
+					#need to load games
+					theGames.each do | b |
+					    home = Team.find_by( team_name: b.home_team, competition: c)
+					    away = Team.find_by( team_name: b.away_team, competition: c)
+					    
+					   Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
+					end
 				end
 			end
 		elsif stuff[2] == 'AA'
@@ -429,7 +531,7 @@ listOfGames.each do | x |
 	elsif stuff[2] == 'GTHL'
 		
 	end
-	
+	#needed because the team names need to be reset
 	theGames = []
 	teamNames = []
 end

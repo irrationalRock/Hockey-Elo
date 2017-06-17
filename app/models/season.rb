@@ -1,12 +1,24 @@
 class Season < ApplicationRecord
-    belongs_to :league
-    has_many :teams
+    has_many :competitions
+    has_many :leagues, through: :competitions
+    #has_many :teams
     
     #gets the top 5 teams in a seasons sorted by ELO
     def self.get_top_team(id) 
-        stuff = Season.find(id).teams.order("elo desc").first(5)
         
-        return { id =>  stuff  }
+        stuff = Season.find(id).competitions.includes(:league)
+        
+        teams = []
+        
+        stuff.each do | x |
+           teams += x.teams 
+        end
+        
+        teams = teams.sort_by &:elo
+        
+        teams = teams.reverse!
+        
+        return { id =>  teams[0..4]  }
     end
     
     def self.get_top_team_all_league(_age_group,_skill_level,_year) 

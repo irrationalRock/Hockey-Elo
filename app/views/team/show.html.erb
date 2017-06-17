@@ -1,7 +1,7 @@
 <% provide(:title,  "#{@team.team_name} - Team Information") %>
 
 <h1><%= @team.team_name %></h1>
-<h4><%= @team.season.age_group %> | <%= @team.season.skill_level %> | <%= @team.season.league.name %> | <%= @team.season.year %>-<%= @team.season.year+1 %></h4>
+<h4><%= link_to "#{@team.competition.league.name}", league_path(@team.competition.league, season_id: "#{@team.competition.season.id}") %> | <%= link_to "#{@team.competition.season.age_group} #{@team.competition.season.skill_level} #{@team.competition.season.year}", season_path(@team.competition.season) %> </h4>
 <h4>ELO: <%= @team.elo %> | <%= @stat[@team.id][:wins] %>-<%= @stat[@team.id][:loses]%>-<%= @stat[@team.id][:ties] %> | <%= number_with_precision( (@stat[@team.id][:ties].to_f + @stat[@team.id][:wins].to_f*2 ) / ((@stat[@team.id][:wins].to_f+@stat[@team.id][:loses].to_f+@stat[@team.id][:ties].to_f) * 2), precision: 3) %> W% </h4>
 <h4><%= number_with_precision( @stat[@team.id][:gf] /gp(@stat[@team.id][:wins],@stat[@team.id][:loses], @stat[@team.id][:ties]).to_f, :precision => 2) %> GPG | <%= number_with_precision( @stat[@team.id][:ga] /gp(@stat[@team.id][:wins], @stat[@team.id][:loses], @stat[@team.id][:ties]).to_f, :precision => 2) %> GAA</h4>
 

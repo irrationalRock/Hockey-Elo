@@ -6,6 +6,6 @@
 <% @seasons.each do | season | %>
     <h4><%= link_to "#{season.age_group} #{season.skill_level} #{season.year}-#{season.year+1}" , season_path(season) %> </h4>
     <% @season_top_teams[season.id].each do | team | %>
-        <p> <%= team.team_name  %> <%= team.elo  %> </p>
+        <p> <%= team.team_name %> <%= team.elo %> </p> 
     <% end %>
 <% end %>

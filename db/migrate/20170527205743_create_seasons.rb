@@ -5,7 +5,7 @@ class CreateSeasons < ActiveRecord::Migration[5.0]
       t.string :skill_level
       t.integer :year
       
-      t.integer :league_id
+      
       
       t.timestamps
     end

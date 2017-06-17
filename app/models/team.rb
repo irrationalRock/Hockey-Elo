@@ -3,7 +3,7 @@ class Team < ApplicationRecord
     #the reason why I could not 
     has_many :home_games, :foreign_key => "home_team_id", :class_name => "Game"
     has_many :away_games, :foreign_key => "away_team_id", :class_name => "Game"
-    belongs_to :season
+    belongs_to :competition
     
     validates :team_name, presence: true
     #nend to get rid of
@@ -44,6 +44,12 @@ class Team < ApplicationRecord
     def self.get_ga(id)
         Team.find(id).home_games.sum(:away_team_score) +
         Team.find(id).away_games.sum(:home_team_score)
+    end
+    
+    def self.get_gf_ranking(team_id, league_id)
+        
+        #get_gf(team_id)/get_games_count(league_id)
+        
     end
     
 end
