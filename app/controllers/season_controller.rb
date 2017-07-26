@@ -1,7 +1,8 @@
 class SeasonController < ApplicationController
     
     def index
-        @seasons = Season.where(year: 2016)
+        
+        @seasons = Season.where(year: 2015)
         
         #need to create has that has key of season id and value be the top teams id
         #@derp = Array.new

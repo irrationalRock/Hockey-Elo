@@ -209,10 +209,10 @@ listOfGames.each do | x |
 			
 			#derp = f.split(',')
 		p f
-		puts "#{f[3]}, #{f[4]}, #{f[0]}"
+		puts "#{f[4]}, #{f[5]}, #{f[0]}"
 		if f[0].include? "Oct"
-			teamCat << f[3]
 			teamCat << f[4]
+			teamCat << f[5]
 		end
 		#end
 		
@@ -253,8 +253,8 @@ listOfGames.each do | x |
 		#f.each_line do |line|
 			#puts line
 			#derp = line.split(',')
-			puts "#{f[0]}, #{f[1]}, #{f[2]}, #{f[2]}, #{f[3]}, #{f[4]}, #{f[5]}, #{f[6]}"
-			games << [f[0], f[1], f[2], f[3], f[4], f[5], f[6].gsub("\n","")]
+			puts "#{f[0]}, #{f[1]}, #{f[2]}, #{f[2]}, #{f[3]}, #{f[4]}, #{f[5]}, #{f[6]} #{f[7]}"
+			games << [f[0], f[1], f[2], f[3], f[4], f[5],f[6], f[7].gsub("\n","")]
 			
 			
 		#end
@@ -312,7 +312,7 @@ stillTesting.each_pair { | key, value |
 	value = value.select { |f| 
 		#p f
 		#4,5 in array
-		(fillTeams.include? f[3]) && (fillTeams.include? f[4])
+		(fillTeams.include? f[4]) && (fillTeams.include? f[5])
 	}
 	puts "final: #{value.length}"
 	
@@ -360,16 +360,7 @@ moreTesting.each_pair { | key, value |
 		#puts z
 		Team.create(team_name: z.to_s, competition: c)
 	end
-	#need to load games
-#	theGames.each do | b |
-#		home = Team.find_by( team_name: b.home_team, competition: c)
-#		away = Team.find_by( team_name: b.away_team, competition: c)
-					    
-#		Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
-#	end
-	
-#	theGames = []
-#	teamNames = []
+
 }
 
 #p storeCompetition
@@ -378,12 +369,12 @@ stillTesting.each_pair do | key, value |
 	#check to see if competiton match with games list 
 	value.each do | x |
 		p x	
-		home = Team.find_by( team_name: x[3], competition: storeCompetition["#{key[0]}#{key[2][0..1]}#{key[2][6..7]}#{key[3]}#{key[1]}"])
-		away = Team.find_by( team_name: x[4], competition: storeCompetition["#{key[0]}#{key[2][0..1]}#{key[2][6..7]}#{key[3]}#{key[1]}"])
+		home = Team.find_by( team_name: x[4], competition: storeCompetition["#{key[0]}#{key[2][0..1]}#{key[2][6..7]}#{key[3]}#{key[1]}"])
+		away = Team.find_by( team_name: x[5], competition: storeCompetition["#{key[0]}#{key[2][0..1]}#{key[2][6..7]}#{key[3]}#{key[1]}"])
 		
 		#puts home 
 		
-		
-		Game.create(home_team: home, away_team: away, home_team_score: x[5], away_team_score: x[6], date: DateTime.strptime("#{x[0]} #{x[1]}", '%b %d %I:%M %p'), venue: x[2]) 
+		#account for leap year
+		Game.create(home_team: home, away_team: away, home_team_score: x[6], away_team_score: x[7], date: DateTime.strptime("#{x[0]} #{x[1]} #{x[2]}", '%b %d %I:%M %p %Y'), venue: x[3]) 
 	end
 end

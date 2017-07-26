@@ -116,21 +116,21 @@ class TeamController < ApplicationController
         @test = Array.new
         
         #need to move to get_games method
-        games = games.sort do |x , y |
+        @test = games.sort do |x , y |
             x.date <=> y.date
         end
         #need to make more efficifent 
-        games = games.each do | x |
-            if x.date.mon == 9 || x.date.mon == 10 || x.date.mon == 11 || x.date.mon == 12
-               @test << x 
-            end
-        end
+        #games = games.each do | x |
+        #    if x.date.mon == 9 || x.date.mon == 10 || x.date.mon == 11 || x.date.mon == 12
+        #       @test << x 
+        #    end
+        #end
         
-        games = games.each do | x |
-            if x.date.mon == 1 || x.date.mon == 2 || x.date.mon == 3 || x.date.mon == 4
-               @test << x 
-            end
-        end
+        #games = games.each do | x |
+        #    if x.date.mon == 1 || x.date.mon == 2 || x.date.mon == 3 || x.date.mon == 4
+        #       @test << x 
+        #    end
+        #end
         
     end
 
