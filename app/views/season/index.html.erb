@@ -2,6 +2,9 @@
 
 <h1>Seasons </h1>
 
+<% @years.each do | year | %>
+    <p><%= link_to "#{year}", season_index_url(year: "#{year}") %></p>
+<% end %>
 
 <% @seasons.each do | season | %>
     <h4><%= link_to "#{season.age_group} #{season.skill_level} #{season.year}-#{season.year+1}" , season_path(season) %> </h4>

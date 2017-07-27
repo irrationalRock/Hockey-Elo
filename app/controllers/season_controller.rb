@@ -2,7 +2,9 @@ class SeasonController < ApplicationController
     
     def index
         
-        @seasons = Season.where(year: 2015)
+        @seasons = Season.where(year: sort_column)
+        
+        @years = Season.distinct.pluck(:year)
         
         #need to create has that has key of season id and value be the top teams id
         #@derp = Array.new
@@ -43,6 +45,18 @@ class SeasonController < ApplicationController
     end
     
     private
+    
+        def sort_column
+            
+            permited_coloumns = Season.distinct.pluck(:year)
+            
+            
+            permited_coloumns.include?(params[:year].to_i) ? params[:year] : 2016
+            
+            #Team.column_names.include?(params[:sort]) ? params[:sort] : "PTS"
+           
+        end
+    
         #got to move to helper
         def cal_stats(id)
             win = 0
