@@ -1,10 +1,17 @@
 <% provide(:title,  "Leagues") %>
 
 <h1>Leagues </h1>
+<p>Year: 
+<% @years.each do | year | %>
+    <%= link_to "#{year}", league_index_url(year: "#{year}") %>
+<% end %>
+</p>
 
 <% @leagues.each_with_index  do |league, index| %>
     <h4><%= league.name  %></h4>
     <% league.seasons.each  do |season| %>
-        <p><%= link_to "#{season.age_group} #{season.skill_level} #{season.year}-#{season.year+1}", league_path(league, season_id: "#{season.id}") %></p>
+        <% if season.year.to_s == @selectYear %>
+            <p><%= link_to "#{season.age_group} #{season.skill_level} #{season.year}-#{season.year+1}", league_path(league, season_id: "#{season.id}") %></p>
+        <% end %>
     <% end %>
 <% end %>

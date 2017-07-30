@@ -1,7 +1,25 @@
 class LeagueController < ApplicationController
     
     def index
+        
+        @years = Season.distinct.pluck(:year)
+        
+        
+        
         @leagues = League.all
+        
+        @selectYear = sort_column
+        
+        
+        #@leagues = @leagues.select { | league |
+        #    league.seasons.where(year: 2015)
+        #}
+        
+        #derp = Array.new
+        
+        #@leagues.each do | league |
+            
+        #end
         
     end
     
@@ -23,6 +41,18 @@ class LeagueController < ApplicationController
     end
     
     private
+    
+        def sort_column
+            
+            permited_coloumns = Season.distinct.pluck(:year)
+            
+            #had to change to string type because compare is string type
+            permited_coloumns.include?(params[:year].to_i) ? params[:year] : "2016"
+            
+            #Team.column_names.include?(params[:sort]) ? params[:sort] : "PTS"
+           
+        end
+    
         #got to move to helper
         def cal_stats(id)
             win = 0

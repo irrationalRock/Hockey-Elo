@@ -7,7 +7,6 @@ class SeasonController < ApplicationController
         @years = Season.distinct.pluck(:year)
         
         #need to create has that has key of season id and value be the top teams id
-        #@derp = Array.new
         @season_top_teams = Hash.new
         @seasons.each do | season |
              @season_top_teams = @season_top_teams.merge!(Season.get_top_team(season.id))
