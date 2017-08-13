@@ -3,7 +3,8 @@
 <h1>Leagues </h1>
 <p>Year: 
 <% @years.each do | year | %>
-    <%= link_to "#{year}", league_index_url(year: "#{year}") %>
+    
+    <%= link_to "#{year}", league_index_url(year: "#{year}"), { :class=>"btn btn-primary" } %>
 <% end %>
 </p>
 

@@ -11,13 +11,9 @@ class SeasonController < ApplicationController
         @seasons.each do | season |
              @season_top_teams = @season_top_teams.merge!(Season.get_top_team(season.id))
         end
-
-        #@teams = Team.order(:elo)
-        #@stats = Hash.new
         
-        #@teams.each do |team|
-        #    @stats = @stats.merge!(cal_stats(team.id))
-        #end
+        @season_list = block_season(@seasons)
+
     end
     
     def show
@@ -44,6 +40,37 @@ class SeasonController < ApplicationController
     end
     
     private
+    
+        def block_season(seasons)
+            #need to create hashes for each different skill_level
+            sep_groups = Hash.new
+            
+            skill_levels = Season.distinct.pluck(:skill_level)
+            
+            skill_levels.each do | level |
+                
+                tmp_level = seasons.select { | x |
+                    x.skill_level == level.to_s
+
+                }
+                
+                sep_groups[level.to_s] = split_array(tmp_level)
+            end
+            
+            sep_groups
+            
+        end
+        
+        def split_array(array)
+            collect = []
+            
+            array.each_slice(3) { | a |
+                #p a
+                collect << a
+            }
+            
+            collect
+        end
     
         def sort_column
             

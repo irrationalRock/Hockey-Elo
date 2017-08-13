@@ -4,40 +4,34 @@
 
 <p>Year: 
 <% @years.each do | year | %>
-    <%= link_to "#{year}", season_index_url(year: "#{year}") %>
+    <%= link_to "#{year}", league_index_url(year: "#{year}"), { :class=>"btn btn-primary" } %>
 <% end %>
 </p>
 
-<p>AAA</p>
-<% @seasons.each do | season | %>
-    
-    <% if season.skill_level == "AAA" %>
-        <h4><%= link_to "#{season.age_group} #{season.skill_level} #{season.year}-#{season.year+1}" , season_path(season) %> </h4>
-        <% @season_top_teams[season.id].each_with_index do | team, index | %>
-            <p><%= index+1 %>. <%= team.team_name %> <%= team.elo %> </p> 
+<h3>AAA</h3>
+<% @season_list['AAA'].each do | season | %>
+    <div class="row">
+        <% season.each do | idv | %>
+            <div class="col-md-4">
+                <h4><%= link_to "#{idv.age_group} #{idv.skill_level} #{idv.year}-#{idv.year+1}" , season_path(idv) %> </h4>
+                <% @season_top_teams[idv.id].each_with_index do | team, index | %>
+                    <p><%= link_to "#{index+1} #{team.team_name} #{team.elo}", team_path(team) %></p>
+                <% end %>
+            </div>
         <% end %>
-    <% end %>
-    
+    </div>
 <% end %>
 
-<p>AA</p>
-<% @seasons.each do | season | %>
-    
-    <% if season.skill_level == "AA" %>
-        <h4><%= link_to "#{season.age_group} #{season.skill_level} #{season.year}-#{season.year+1}" , season_path(season) %> </h4>
-        <% @season_top_teams[season.id].each_with_index do | team, index | %>
-            <p><%= index+1 %>. <%= team.team_name %> <%= team.elo %> </p> 
+<h3>AA</h3>
+<% @season_list['AA'].each do | season | %>
+    <div class="row">
+        <% season.each do | idv | %>
+            <div class="col-md-4">
+                <h4><%= link_to "#{idv.age_group} #{idv.skill_level} #{idv.year}-#{idv.year+1}" , season_path(idv) %> </h4>
+                <% @season_top_teams[idv.id].each_with_index do | team, index | %>
+                    <p><%= link_to "#{index+1} #{team.team_name} #{team.elo}", team_path(team) %></p>
+                <% end %>
+            </div>
         <% end %>
-    <% end %>
-<% end %>
-
-<p>A</p>
-<% @seasons.each do | season | %>
-    
-    <% if season.skill_level == "A" %>
-        <h4><%= link_to "#{season.age_group} #{season.skill_level} #{season.year}-#{season.year+1}" , season_path(season) %> </h4>
-        <% @season_top_teams[season.id].each_with_index do | team, index | %>
-            <p><%= index+1 %>. <%= team.team_name %> <%= team.elo %> </p> 
-        <% end %>
-    <% end %>
+    </div>
 <% end %>
