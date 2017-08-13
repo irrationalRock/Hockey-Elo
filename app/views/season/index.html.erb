@@ -4,7 +4,7 @@
 
 <p>Year: 
 <% @years.each do | year | %>
-    <%= link_to "#{year}", league_index_url(year: "#{year}"), { :class=>"btn btn-primary" } %>
+    <%= link_to "#{year}", season_index_url(year: "#{year}"), { :class=>"btn btn-primary" } %>
 <% end %>
 </p>
 
