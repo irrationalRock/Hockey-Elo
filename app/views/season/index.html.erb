@@ -15,7 +15,7 @@
             <div class="col-md-4">
                 <h4><%= link_to "#{idv.age_group} #{idv.skill_level} #{idv.year}-#{idv.year+1}" , season_path(idv) %> </h4>
                 <% @season_top_teams[idv.id].each_with_index do | team, index | %>
-                    <p><%= link_to "#{index+1} #{team.team_name} #{team.elo}", team_path(team) %></p>
+                    <p><%= link_to "#{index+1}. #{team.team_name} #{team.elo}", team_path(team) %></p>
                 <% end %>
             </div>
         <% end %>

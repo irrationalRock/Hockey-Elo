@@ -8,8 +8,10 @@
 <% end %>
 </p>
 
+
+
 <% @leagues.each_with_index  do |league, index| %>
-    <h4><%= league.name  %></h4>
+    <h3><%= league.name  %></h4>
     <% league.seasons.each  do |season| %>
         <% if season.year.to_s == @selectYear %>
             <p><%= link_to "#{season.age_group} #{season.skill_level} #{season.year}-#{season.year+1}", league_path(league, season_id: "#{season.id}") %></p>

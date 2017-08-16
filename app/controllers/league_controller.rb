@@ -11,15 +11,7 @@ class LeagueController < ApplicationController
         @selectYear = sort_column
         
         
-        #@leagues = @leagues.select { | league |
-        #    league.seasons.where(year: 2015)
-        #}
-        
-        #derp = Array.new
-        
-        #@leagues.each do | league |
-            
-        #end
+        #@season_list = block_season(@seasons)
         
     end
     
