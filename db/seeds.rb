@@ -27,28 +27,6 @@ files.each do | x |
 	end
 end
 
-#combo = Array.new
-
-#listOfGames.each_with_index do | x, index |
-#	stuff = x.to_s.split('-')
-	#combo = combo.merge( { index => [stuff[1], stuff[2], stuff[3]] } )
-#	combo << [stuff[1], stuff[2].sub("_"," "), File.basename(stuff[3], '.csv').to_i]
-#end
-
-#combo = combo.uniq
-
-#combo.each do | x |
-#	p x
-#end
-
-#storeSeasons = Hash.new
-
-#combo.each do | y |
-#	s = Season.create(skill_level: y[0], age_group: y[1], year: y[2] )
-#	storeSeasons = storeSeasons.merge( "#{y[1][0..1]}#{y[1][6..7]}#{y[2].to_s}" => s )
-	
-#end
-
 
 
 #move class somewhere else
@@ -125,64 +103,6 @@ class Stuff
 	end
 end
 
-#files = Dir.entries("./db/game_data")
-#listOfGames = []
-#files.each do | x |
-#    puts x
-#	name = x.match(".*\.\(csv\)")
-#	unless name.nil?
-		#puts name
-#		listOfGames << name
-#	end
-#end
-
-#p storeSeasons
-
-
-
-#listOfGames.each do | x |
-
-#	fileSplit = x.to_s.split('-')
-	
-#	CSV.foreach("./db/game_data/" + x.to_s) do |row|
-		# use row here...
-		#puts row
-#		game = Stuff.new(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
-#		#puts game.print
-#		theGames << game
-#	end
-	
-#	theGames.each do | y |
-#		teamNames << y.away_team
-#		teamNames << y.home_team
-#		teamNames = teamNames.uniq
-#	end
-#	derp = fileSplit[3].split('.')
-		
-	#p fileSplit
-#	c = Competition.create(season: storeSeasons["#{fileSplit[2][0..1]}#{fileSplit[2][6..7]}#{derp[0]}"], league: leagues[fileSplit[0].downcase] )
-#	puts fileSplit[0]
-	#puts "#{fileSplit[2][0..1]}#{fileSplit[2][6..7]}#{derp[0]}"
-	#p c
-	
-	#need to first create a competition and then add it to a team
-#	teamNames.each do | z |
-		#create teams here
-#		puts z
-#		Team.create(team_name: z.to_s, competition: c)
-#	end
-	#need to load games
-#	theGames.each do | b |
-#		home = Team.find_by( team_name: b.home_team, competition: c)
-#		away = Team.find_by( team_name: b.away_team, competition: c)
-					    
-#		Game.create(home_team: home, away_team: away, home_team_score: b.home_score, away_team_score: b.away_score, date: b.time, venue: b.venue) 
-#	end
-	
-#	theGames = []
-#	teamNames = []
-#end
-
 #################################################################
 
 theGames = []
@@ -249,16 +169,10 @@ listOfGames.each do | x |
 		#make seperate array for each to put the teams in
 		games = Array.new
 		p f
-		#need to move adding somewhere else
-		#f.each_line do |line|
-			#puts line
-			#derp = line.split(',')
-			puts "#{f[0]}, #{f[1]}, #{f[2]}, #{f[2]}, #{f[3]}, #{f[4]}, #{f[5]}, #{f[6]} #{f[7]}"
-			games << [f[0], f[1], f[2], f[3], f[4], f[5],f[6], f[7].gsub("\n","")]
-			
-			
-		#end
-		#teamCat = teamCat.uniq
+
+		puts "#{f[0]}, #{f[1]}, #{f[2]}, #{f[2]}, #{f[3]}, #{f[4]}, #{f[5]}, #{f[6]} #{f[7]}"
+		games << [f[0], f[1], f[2], f[3], f[4], f[5],f[6], f[7].gsub("\n","")]
+
 		#look into using moreTesting here to get keys instead
 		herp = [stuff[0], stuff[2].to_s.sub("_"," "), stuff[3].to_s.sub("_"," "), File.basename(stuff[4], '.csv').to_i]
 		#p herp
@@ -272,11 +186,6 @@ listOfGames.each do | x |
 		end
 		stillTesting.rehash
 		
-		#zerp = [stuff[0], stuff[2].to_s.sub("_"," "), stuff[3].to_s.sub("_"," "), File.basename(stuff[4], '.csv').to_i]
-		#p zerp
-		#allSeason[zerp] = games
-		#allSeason.rehash
-		#games = []
 	end
 end
 
@@ -347,7 +256,6 @@ storeCompetition = Hash.new
 moreTesting.each_pair { | key, value |
 	
 	#p key
-	#c = Competition.create(season: storeSeasons["#{key[3][0..1]}#{key[3][6..7]}#{key[4].to_s}#{key[2]}"], division: storeDivisons["#{key[1]}#{key[0]}"])
 	#need to store all of competitions in hash
 	c = Competition.create(season: storeSeasons["#{key[2][0..1]}#{key[2][6..7]}#{key[3]}#{key[1]}"], league: leagues[key[0].downcase] )
 	storeCompetition = storeCompetition.merge("#{key[0]}#{key[2][0..1]}#{key[2][6..7]}#{key[3]}#{key[1]}" => c )

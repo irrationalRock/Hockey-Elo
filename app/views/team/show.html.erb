@@ -6,6 +6,8 @@
 <h4><%= number_with_precision( @stat[@team.id][:gf] /gp(@stat[@team.id][:wins],@stat[@team.id][:loses], @stat[@team.id][:ties]).to_f, :precision => 2) %> GPG | <%= number_with_precision( @stat[@team.id][:ga] /gp(@stat[@team.id][:wins], @stat[@team.id][:loses], @stat[@team.id][:ties]).to_f, :precision => 2) %> GAA</h4>
 
 
+<h2>Schedule</h2>
+
 <table class="table table-hover">
     <tr>
         <th>Date</th>
