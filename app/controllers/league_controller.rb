@@ -3,20 +3,15 @@ class LeagueController < ApplicationController
     def index
         
         @years = Season.distinct.pluck(:year)
-        
-        
-        
+
         @leagues = League.all
         
         @selectYear = sort_column
         
         
-        #@season_list = block_season(@seasons)
-        
     end
     
     def show
-        #should have a safe params here
         @league = League.find(params[:id])
         @season = Season.find(params[:season_id])
         @teams = Competition.where(league_id: params[:id], season_id: params[:season_id]).first.teams
@@ -38,10 +33,7 @@ class LeagueController < ApplicationController
             
             permited_coloumns = Season.distinct.pluck(:year)
             
-            #had to change to string type because compare is string type
             permited_coloumns.include?(params[:year].to_i) ? params[:year] : "2016"
-            
-            #Team.column_names.include?(params[:sort]) ? params[:sort] : "PTS"
            
         end
     

@@ -6,7 +6,7 @@ class SeasonController < ApplicationController
         
         @years = Season.distinct.pluck(:year)
         
-        #need to create has that has key of season id and value be the top teams id
+        #create has key of season id and value be the top teams id
         @season_top_teams = Hash.new
         @seasons.each do | season |
              @season_top_teams = @season_top_teams.merge!(Season.get_top_team(season.id))
@@ -76,10 +76,8 @@ class SeasonController < ApplicationController
             
             permited_coloumns = Season.distinct.pluck(:year)
             
-            
             permited_coloumns.include?(params[:year].to_i) ? params[:year] : 2016
-            
-            #Team.column_names.include?(params[:sort]) ? params[:sort] : "PTS"
+
            
         end
     
@@ -92,7 +90,6 @@ class SeasonController < ApplicationController
             goals_for = Team.get_gf(id)
         
             goals_against = Team.get_ga(id)
-        
         
             win = Team.get_wins(id)
         

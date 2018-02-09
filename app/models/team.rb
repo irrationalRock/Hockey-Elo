@@ -1,17 +1,10 @@
 class Team < ApplicationRecord
     #when calling assoscations from team use home_games and away_games
-    #the reason why I could not 
     has_many :home_games, :foreign_key => "home_team_id", :class_name => "Game"
     has_many :away_games, :foreign_key => "away_team_id", :class_name => "Game"
     belongs_to :competition
     
     validates :team_name, presence: true
-    #nend to get rid of
-    #validates :location, presence: true
-    #validates :skill_level, presence: true
-    #validates :age_group, presence: true
-    
-    #put the stats method in here
     
     def self.get_games(id)
         Team.find(id).home_games + Team.find(id).away_games
@@ -46,9 +39,8 @@ class Team < ApplicationRecord
         Team.find(id).away_games.sum(:home_team_score)
     end
     
+    #unimplemented method
     def self.get_gf_ranking(team_id, league_id)
-        
-        #get_gf(team_id)/get_games_count(league_id)
         
     end
     
