@@ -1,25 +1,20 @@
 # Hockey Elo Calculator
 
+## What is this?
+This is a rails web app that calculates how good hockey teams are.
+Currently this site takes data from OMHA and Alliance.
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## How to build? 
+First you need to download ruby and rails.
+Then run this command:
+`bundle install`
 
-Things you may want to cover:
+You would then need to run the migration files.
 
-* Ruby version
+## How to run? 
 
-* System dependencies
+To run on cloud9:
+`rails s -b $IP -p $PORT`
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+To run on local server:
+`rails s`
