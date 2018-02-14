@@ -10,7 +10,8 @@ class TeamController < ApplicationController
         @teams.each do |team|
             @stats = @stats.merge!(cal_stats(team.id))
         end
-        #move the if statment off the index method
+        #currently not used, but is for sorting teams based on various stats
+        <<-DOC
         if sort_column == "W"
             
             if sort_direction == "asc"
@@ -101,6 +102,7 @@ class TeamController < ApplicationController
             
         end
         
+        DOC
         
     end
     
